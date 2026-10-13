@@ -381,7 +381,7 @@ function renderStudent(){
     <button role="tab" data-t="prep" aria-selected="${S.tab==="prep"}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg>Дайындық</button>
     <button role="tab" data-t="plan" aria-selected="${S.tab==="plan"}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>Менің жоспарым</button>
   </div>
-  <div class="banner codebox"><span>Жеке кодың: <b id="my-code"></b></span><button type="button" id="copy-code">Көшіру</button><small class="muted">Басқа құрылғыдан кіру үшін сақтап қой. Ешкімге берме.</small></div>
+  <div class="banner codebox"><span>Жеке кодың: <b id="my-code"></b></span><button type="button" id="copy-code">Көшіру</button><button type="button" class="ghost danger" id="logout">Шығу</button><small class="muted">Басқа құрылғыдан кіру үшін сақтап қой. Ешкімге берме.</small></div>
   <section class="panel" id="t-day"></section>
   <form class="panel" id="t-prep">
     <div><h2>Кездесуге дайындал</h2><p class="muted">Жауаптарды тек сен және мұғалім көреді. Бөлім бойынша толтырып, «Сақтау» бас. Кейін қайта өзгертуге болады.</p></div>
@@ -404,6 +404,7 @@ function renderStudent(){
     const flat=QUESTIONS.map(q=>[q.n+". "+q.t,answers[q.k]||""]).concat(IKI.map(i=>["Икигай: "+i.t,collectIki()[i.k]||""]),[["Икигай: менің ісім",collectIki().center||""]]);
     try{await api("save",{token:getToken(),answers,ikigai:collectIki(),flat});S.me={...S.me,answers,ikigai:collectIki()};flash(msg,"Сақталды")}catch(err){flash(msg,"Сақталмады. Интернетті тексеріп, қайта бас.")}});
   $("#my-code").textContent=getToken();
+  $("#logout").onclick=()=>{const b=$("#logout");if(!b.dataset.armed){b.dataset.armed="1";b.textContent="Кодты сақтадым, шығу";return}clearInterval(pollT);setToken("");S.me=null;S.uid=null;S.myNote=null;S.tab="day";renderWelcome()};
   $("#copy-code").onclick=async()=>{try{await navigator.clipboard.writeText(getToken());$("#copy-code").textContent="Көшірілді"}catch{const r=document.createRange();r.selectNodeContents($("#my-code"));getSelection().removeAllRanges();getSelection().addRange(r)}};
   showTab();renderStudentDynamic();
 }
@@ -472,7 +473,7 @@ function renderTeacher(notesOnly){
   const ids=Object.keys(S.students);
   const booked=list.filter(s=>S.slots[s.id]?.uid).length;
   const ready=ids.filter(id=>filled(S.students[id])>=30).length;
-  $("#t-sum").innerHTML=`<div class="row" style="justify-content:space-between"><h2>Мұғалім панелі</h2><div class="row"><button type="button" class="ghost" id="t-refresh">Жаңарту</button><span class="pill">Тек сіз көресіз</span></div></div>
+  $("#t-sum").innerHTML=`<div class="row" style="justify-content:space-between"><h2>Мұғалім панелі</h2><div class="row"><button type="button" class="ghost" id="t-refresh">Жаңарту</button><button type="button" class="ghost danger" id="t-logout">Шығу</button><span class="pill">Тек сіз көресіз</span></div></div>
   <div class="stats"><div class="stat"><b>${ids.length}</b><span>тіркелді</span></div><div class="stat"><b>${booked}/${list.length}</b><span>уақыт брондалды</span></div><div class="stat"><b>${ready}</b><span>дайындықты толтырды</span></div><div class="stat"><b>${Object.values(S.notes).filter(n=>n.idp).length}</b><span>IDP дайын</span></div></div>`;
   {
     $("#t-day").innerHTML=`<h2>15 қазан кестесі</h2><div class="tablebox"><table class="sheet"><thead><tr><th>Уақыт</th><th>Студент</th><th>Дайындық</th><th></th></tr></thead><tbody>
@@ -493,6 +494,7 @@ function renderTeacher(notesOnly){
   }
   renderAnswers();
   const rf=$("#t-refresh");if(rf)rf.onclick=()=>refreshAdmin().catch(()=>{});
+  const lo=$("#t-logout");if(lo)lo.onclick=()=>{clearInterval(pollT);S.pw="";S.owner=false;S.students={};S.notes={};S.sel=null;S.tab="day";history.replaceState(null,"",location.pathname);renderWelcome()};
   if(S.sel)renderStudentHead();
 }
 function renderAnswers(){
