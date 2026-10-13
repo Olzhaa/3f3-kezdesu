@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>3F3 жеке кездесу</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Rubik:wght@400;500;600&display=swap">
+<style>
+/* Layout: a night-blue header band with a steppe-ornament lattice, then white cards on a cool page; a segmented tab bar switches views. */
+/* Layout: indigo band header, chunky "clay" cards (thick soft borders, double shadows, 20px radius) on a pale indigo ground; orange marks the one thing that is yours (your slot, primary actions in focus). */
+:root{
+  --bg:#eef2ff; --surface:#ffffff; --raised:#f5f7ff; --ink:#1e1b4b; --muted:#475569; --line:#c7d2fe;
+  --band:#1e1b4b; --band-ink:#ffffff; --band-muted:#c7d2fe;
+  --accent:#4f46e5; --accent-ink:#ffffff; --accent-soft:#e0e7ff; --accent-deep:#3730a3;
+  --gold:#ea580c; --gold-soft:#fff1e6; --orange-ink:#1c0a00;
+  --ok:#15803d; --warn:#b45309; --bad:#dc2626;
+  --c1:#f97316; --c2:#4f46e5; --c3:#0d9488; --c4:#db2777;
+  --shadow:0 2px 0 rgba(79,70,229,.10),0 10px 28px -6px rgba(30,27,75,.16);
+  --clay:inset 0 -4px 0 rgba(79,70,229,.10),inset 0 2px 0 rgba(255,255,255,.9);
+  --body:"Rubik", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --display:"Nunito", "Rubik", system-ui, sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f0d2e; --surface:#1a1744; --raised:#221e55; --ink:#eef2ff; --muted:#b4bcdc; --line:#3a3580;
+  --band:#0a0820; --band-ink:#ffffff; --band-muted:#a5b4fc;
+  --accent:#a5b4fc; --accent-ink:#141038; --accent-soft:#2c2870; --accent-deep:#c7d2fe;
+  --gold:#fb923c; --gold-soft:#3a2312; --orange-ink:#1c0a00;
+  --ok:#4ade80; --warn:#fbbf24; --bad:#f87171;
+  --shadow:0 2px 0 rgba(0,0,0,.35),0 10px 28px -6px rgba(0,0,0,.5);
+  --clay:inset 0 -4px 0 rgba(0,0,0,.25),inset 0 2px 0 rgba(255,255,255,.06); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f0d2e; --surface:#1a1744; --raised:#221e55; --ink:#eef2ff; --muted:#b4bcdc; --line:#3a3580;
+  --band:#0a0820; --band-ink:#ffffff; --band-muted:#a5b4fc;
+  --accent:#a5b4fc; --accent-ink:#141038; --accent-soft:#2c2870; --accent-deep:#c7d2fe;
+  --gold:#fb923c; --gold-soft:#3a2312; --orange-ink:#1c0a00;
+  --ok:#4ade80; --warn:#fbbf24; --bad:#f87171;
+  --shadow:0 2px 0 rgba(0,0,0,.35),0 10px 28px -6px rgba(0,0,0,.5);
+  --clay:inset 0 -4px 0 rgba(0,0,0,.25),inset 0 2px 0 rgba(255,255,255,.06); color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.band{background:var(--band);color:var(--band-ink);position:relative;overflow:hidden;padding-inline:16px;padding-block:28px 64px}
+.band::before{content:"";position:absolute;inset:0;opacity:.13;background-image:
+  linear-gradient(45deg,var(--gold) 1px,transparent 1px),linear-gradient(-45deg,var(--gold) 1px,transparent 1px);
+  background-size:22px 22px;mask-image:linear-gradient(90deg,transparent 30%,#000 100%);-webkit-mask-image:linear-gradient(90deg,transparent 30%,#000 100%)}
+.band-in{position:relative;max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.band .eyebrow{color:var(--gold)}
+.band h1{font-size:clamp(26px,5vw,40px);font-weight:700;letter-spacing:-.01em}
+.band .meta{display:flex;gap:10px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.09);color:var(--band-ink);font-size:14px;font-variant-numeric:tabular-nums}
+.chip b{color:var(--gold);font-weight:600}
+.wrap{max-width:920px;margin:-40px auto 0;padding-inline:16px;padding-block:0 64px;display:flex;flex-direction:column;gap:18px;position:relative}
+h1,h2,h3{font-family:var(--body);text-wrap:balance;margin:0;line-height:1.25}
+h2{font-size:19px;font-weight:600}
+h3{font-size:16px;font-weight:600}
+p{margin:0}
+.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.panel{background:var(--surface);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:16px;min-width:0;box-shadow:var(--shadow)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+label{display:flex;flex-direction:column;gap:6px;font-weight:500;min-width:0}
+label small{font-weight:400;color:var(--muted)}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;box-sizing:border-box}
+textarea{min-height:80px;resize:vertical}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;font-weight:500;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 16px;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);padding:11px 20px}
+button.ghost{background:transparent}
+button.danger{color:var(--bad)}
+button:disabled{opacity:.5;cursor:default}
+.saved{font-size:14px;color:var(--ok);font-weight:500}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;background:var(--surface);padding:5px;border-radius:14px;box-shadow:var(--shadow)}
+.tabs button{border:0;background:transparent;flex:1 1 auto;border-radius:10px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.seg{display:inline-flex;gap:2px;background:var(--raised);padding:3px;border-radius:10px;border:1px solid var(--line)}
+.seg button{border:0;background:transparent;padding:6px 12px;font-size:14px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.slot{font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;padding:12px 6px;text-align:center;border-radius:12px;border:1.5px solid var(--line);background:var(--raised)}
+.slot.free{border-color:var(--accent-soft);color:var(--accent);background:var(--accent-soft)}
+.slot.free:hover{border-color:var(--accent)}
+.slot.taken{color:var(--muted);cursor:default;opacity:.45;font-weight:400}
+.slot.mine{background:var(--gold);color:#1a1405;border-color:var(--gold)}
+.lunch{grid-column:1/-1;text-align:center;font-size:13px;color:var(--muted);padding:6px;display:flex;align-items:center;gap:10px}
+.lunch::before,.lunch::after{content:"";flex:1;border-top:1px dashed var(--line)}
+.sheet{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.sheet td,.sheet th{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.sheet th{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.sheet td:first-child{font-weight:600;white-space:nowrap}
+.sheet tr.break td{color:var(--muted);font-size:13px;background:var(--raised);font-weight:400}
+.tablebox{overflow-x:auto}
+.pill{display:inline-block;font-size:12px;font-weight:500;padding:3px 9px;border-radius:999px;background:var(--raised);color:var(--muted);white-space:nowrap}
+.pill.ok{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.pill.warn{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.stat{background:var(--raised);border-radius:12px;padding:12px 14px}
+.stat b{display:block;font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+.stat span{font-size:13px;color:var(--muted)}
+.q{display:flex;flex-direction:column;gap:6px;padding-block:6px;border-bottom:1px solid var(--line);padding-bottom:16px}
+.q .n{font-family:"Rubik Mono One",var(--body);font-size:12px;color:var(--gold)}
+.answer{white-space:pre-wrap;background:var(--raised);border-radius:10px;padding:10px 12px;min-height:20px;overflow-wrap:anywhere}
+.answer.empty{color:var(--muted);font-style:italic}
+.note{background:var(--gold-soft);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.ikigai{display:grid;grid-template-columns:minmax(0,300px) 1fr;gap:18px;align-items:start}
+@media (max-width:640px){.ikigai{grid-template-columns:1fr}}
+.ikigai svg{width:100%;max-width:300px;height:auto}
+.ikigai svg text{fill:var(--ink);font-family:var(--body);font-size:11px}
+.q-quarter{border-left:3px solid var(--gold);padding-left:14px;display:flex;flex-direction:column;gap:8px}
+.idp-view .q-quarter p{white-space:pre-wrap}
+.banner{padding:12px 14px;border-radius:10px;background:var(--accent-soft)}
+.banner.err{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad)}
+.studentlist{display:flex;flex-direction:column}
+.studentlist button{display:flex;justify-content:space-between;gap:10px;text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;padding:12px 4px;flex-wrap:wrap}
+.studentlist button span{min-width:0}
+.qcard{display:flex;flex-direction:column;gap:10px;padding-block:6px}
+.qcard + .qcard{border-top:1px solid var(--line);padding-top:18px}
+.qcard h3 .n{font-family:"Rubik Mono One",var(--body);font-size:12px;color:var(--gold);margin-right:8px}
+.resp{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:4px 14px;padding:10px 12px;border-radius:10px;background:var(--raised)}
+.resp .who{font-weight:600}
+.resp .who button{all:unset;cursor:pointer;color:var(--accent);font-weight:600}
+.resp .txt{white-space:pre-wrap;min-width:0;overflow-wrap:anywhere}
+.resp .txt.empty{color:var(--muted);font-style:italic}
+@media (max-width:560px){.resp{grid-template-columns:1fr}}
+.qpick{display:flex;gap:6px;flex-wrap:wrap}
+.qpick button{padding:5px 11px;font-size:13px;border-radius:999px}
+.qpick button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+[hidden]{display:none!important}
+details.sec{border:1px solid var(--line);border-radius:12px;padding:4px 16px}
+details.sec[open]{padding-bottom:14px}
+details.sec > summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;padding-block:12px;font-weight:600;font-size:16px}
+details.sec > summary::-webkit-details-marker{display:none}
+details.sec > summary::before{content:"+";font-weight:700;color:var(--accent);width:14px}
+details.sec[open] > summary::before{content:"–"}
+details.sec > summary span:first-of-type{flex:1}
+details.sec .q:last-child{border-bottom:0}
+.q a{color:var(--accent);font-weight:500;font-size:14px}
+.savebar{position:sticky;bottom:0;background:var(--surface);padding-block:12px;border-top:1px solid var(--line);z-index:1}
+.idp-h{font-size:17px;color:var(--accent);padding-top:10px;border-top:1px solid var(--line)}
+.idp-title{display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:12px;background:var(--accent-soft)}
+.idp-title h3{font-size:18px}
+.iblock{display:flex;flex-direction:column;gap:4px}
+.goalgrid{display:grid;grid-template-columns:2fr 2fr 1fr 2fr;gap:8px;align-items:end}
+@media (max-width:640px){.goalgrid{grid-template-columns:1fr}.goalgrid .eyebrow{display:none}.goalgrid input:nth-child(4n+5){margin-top:12px}}
+.gtable td{vertical-align:top;min-width:120px}
+.pickl{max-width:640px}
+.sr{font-size:0}
+.codebox{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.codebox b{font-family:ui-monospace,Menlo,monospace;letter-spacing:.04em;word-break:break-all}
+.codebox small{flex-basis:100%}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* --- clay overrides (UI/UX Pro Max: Claymorphism, education) --- */
+body{font-size:16px;line-height:1.5}
+h1,h2,h3,.stat b{font-family:var(--display);letter-spacing:-.01em}
+h2{font-size:22px;font-weight:800}
+h3{font-size:17px;font-weight:800}
+.band h1{font-weight:900;font-size:clamp(30px,6vw,46px)}
+.band .eyebrow{color:#fdba74}
+.chip b{color:#fdba74}
+.panel{border:3px solid var(--line);border-radius:24px;box-shadow:var(--shadow),var(--clay);padding:24px}
+@media (max-width:480px){.panel{padding:18px;border-radius:20px}}
+button,select,summary,.slot,a{cursor:pointer;transition:background-color .18s var(--ease),border-color .18s var(--ease),box-shadow .18s var(--ease),transform .12s var(--ease),color .18s var(--ease)}
+button{min-height:44px;border-width:2px;border-radius:14px;font-weight:600}
+button.primary{border-radius:16px;box-shadow:inset 0 -4px 0 var(--accent-deep);padding:12px 22px;font-size:16px}
+button.primary:hover:not(:disabled){filter:brightness(1.06)}
+button.primary:active:not(:disabled){box-shadow:inset 0 -1px 0 var(--accent-deep);transform:translateY(2px)}
+button:disabled{cursor:not-allowed}
+input,textarea,select{min-height:44px;border:2px solid var(--line);border-radius:14px;font-size:16px;font-weight:400;background:var(--raised)}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);outline:3px solid color-mix(in srgb,var(--accent) 30%,transparent);outline-offset:0}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.tabs{border:3px solid var(--line);border-radius:22px;padding:6px;gap:6px;box-shadow:var(--shadow)}
+.tabs button{border:0;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;font-size:15px}
+.tabs button:hover:not([aria-selected="true"]){background:var(--accent-soft);color:var(--ink)}
+.tabs button[aria-selected="true"]{box-shadow:inset 0 -4px 0 var(--accent-deep)}
+.ico{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.slot{min-height:52px;border-width:2px;border-radius:16px;font-size:17px}
+.slot.free{background:var(--surface);border-color:var(--line);color:var(--accent);box-shadow:inset 0 -3px 0 var(--line)}
+.slot.free:hover{border-color:var(--accent);background:var(--accent-soft)}
+.slot.mine{background:var(--gold);border-color:var(--gold);color:var(--orange-ink);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)}
+.slot.taken{background:var(--raised);text-decoration:line-through}
+.stat{border:2px solid var(--line);border-radius:18px;background:var(--raised);box-shadow:var(--clay)}
+.stat b{font-weight:900;font-size:30px}
+.pill{font-size:13px;padding:4px 10px;border:1.5px solid transparent}
+details.sec{border:2px solid var(--line);border-radius:18px;background:var(--raised);padding-inline:18px}
+details.sec[open]{background:var(--surface)}
+details.sec > summary{min-height:48px;font-family:var(--display);font-weight:800;font-size:17px}
+details.sec > summary::before{content:"";width:22px;height:22px;flex:none;border-radius:8px;background:var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center/14px no-repeat}
+details.sec[open] > summary::before{content:"";background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E")}
+.q .n,.qcard h3 .n{font-family:var(--display);font-weight:900;font-size:13px;color:var(--gold)}
+.answer,.resp{border-radius:14px}
+.resp{border:2px solid var(--line);background:var(--surface)}
+.note{border:2px solid color-mix(in srgb,var(--gold) 35%,transparent);border-radius:18px}
+.idp-title{border:2px solid var(--line);border-radius:18px}
+.banner{border-radius:14px;border:2px solid var(--line)}
+.q-quarter{border-left-width:4px;border-left-color:var(--gold)}
+.studentlist button{min-height:56px;border-radius:0}
+.studentlist button:hover{background:var(--raised)}
+.sheet tr:hover td{background:var(--raised)}
+.savebar{border-radius:0 0 18px 18px}
+a{color:var(--accent)}
+.tabs{flex-wrap:nowrap}
+.tabs button{flex:1 1 0;min-width:0;padding-inline:8px}
+@media (max-width:560px){.tabs button{flex-direction:column;gap:4px;font-size:13px;min-height:58px;padding:6px 4px;line-height:1.15;text-align:center}}
+@media (prefers-reduced-motion:reduce){button,select,summary,.slot,a{transition:none}button.primary:active{transform:none}}
+</style>
+
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<script src="config.js"></script>
+</head>
+<body>
+<header class="band"><div class="band-in">
+  <span class="eyebrow">Куратор сағаты · 3F3 тобы</span>
+  <h1>Жеке кездесу</h1>
+  <div class="meta"><span class="chip"><b>15 қазан 2026</b> бейсенбі</span><span class="chip">09:00–18:00</span><span class="chip">Практика · Мамандық · IDP</span></div>
+</div></header>
+<div class="wrap">
+  <div id="app">
+    <div class="panel">
+      <h2>Жүктеліп жатыр…</h2>
+      <p class="muted">Мұнда тіркелу, кездесу уақытын таңдау, дайындық сұрақтары және сенің жеке жоспарың (IDP) пайда болады.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const START=9*60, END=18*60, LUNCH=[13*60,14*60];
+const SECTIONS=[
+  {id:"p",t:"Практика және жоспар",d:"2-семестр практикасы, тұратын жер, мамандық."},
+  {id:"t",t:"Тесттер",d:"Тестті тапсырып, нәтижесін осында жаз."},
+  {id:"1",t:"1-бөлім: Қызығушылықтар",d:""},
+  {id:"2",t:"2-бөлім: Қабілеттер мен күшті тұстар",d:""},
+  {id:"3",t:"3-бөлім: Құндылықтар",d:""},
+  {id:"4",t:"4-бөлім: Орта",d:""},
+  {id:"5",t:"5-бөлім: Поток күйі (Flow-state)",d:""},
+  {id:"6",t:"6-бөлім: Қандай мамандыққа лайықпын",d:""}
+];
+const QUESTIONS=[
+  {s:"p",k:"practice",t:"2-семестрде қай жерге практикаға барасың?",h:"Компания/ұйым атауы, қала. Келісілді ме, әлде әлі іздеп жүрсің бе?"},
+  {s:"p",k:"practiceGoal",t:"Практикада не істегің келеді, нені үйренгің келеді?",h:"Қандай тапсырмалар, қандай дағды, қандай нәтиже күтесің?"},
+  {s:"p",k:"living",t:"Практика кезінде қайда тұрасың?",h:"Жатақхана, туыстар, пәтер. Жол, ақша, тұрмыс жағынан қиындық бар ма?"},
+  {s:"p",k:"specialty",t:"Мамандығыңды нақты таптың ба, әлде әлі белгісіз бе?",h:"Қай бағыт ұнайды? Белгісіз болса, неге күмәнданасың?"},
+  {s:"p",k:"oneYear",t:"Бір жылдан кейін өзіңді қайда көресің?",h:"Оқу, жұмыс, дағды, табыс, өмір."},
+  {s:"p",k:"courses",t:"Қандай курс, сертификат немесе жарыс арқылы дамығың келеді?",h:"Онлайн курс, олимпиада, хакатон, тіл курсы т.б."},
+  {s:"p",k:"english",t:"Ағылшын тілі деңгейің қандай?",h:"A1–C1, немесе өз сөзіңмен."},
+  {s:"p",k:"work",t:"Қазір жұмыс істейсің бе (part-time, фриланс)?",h:"Иә болса, қайда және аптасына қанша сағат."},
+  {s:"p",k:"portfolio",t:"Резюме, портфолио, GitHub немесе LinkedIn бар ма?",h:"Сілтеме болса қалдыр."},
+  {s:"p",k:"difficulties",t:"Қазір не қиын (оқу, қаржы, тұрмыс, денсаулық, уақыт)?",h:"Тек мұғалім көреді."},
+  {s:"p",k:"help",t:"Мұғалімнен немесе колледжден қандай көмек керек?",h:""},
+  {s:"t",k:"mbti",t:"MBTI нәтижең",h:"Тест: 16personalities.com/ru/test-lichnosti. Типің (мысалы ENFP) және сипаттамадан саған сәйкес келетін 2–3 сөйлем.",link:"https://www.16personalities.com/ru/test-lichnosti"},
+  {s:"t",k:"gardner",t:"Гарднер тесті: ең жоғары 3 интеллект түрі",h:"Тест: idrlabs.com. Мысалы: Экзистенциалды 90%, Музыкалық 87%, Тұлғааралық 80%.",link:"https://www.idrlabs.com/ru/multiple-intelligences/test.php"},
+  {s:"t",k:"gallup",t:"Gallup нәтижесі (бар болса)",h:"ТОП-5 талант және әлсіз таланттар. Тапсырмаған болсаң, бос қалдыр."},
+  {s:"1",k:"i1",t:"Маған қандай сабақтар ұнайды? Неліктен?",h:"Мысал: Математика мен химия ұнайды, себебі нақты шешімге жеткенді ұнатамын."},
+  {s:"1",k:"i2",t:"Бос уақытымда немен айналысқанды жақсы көремін?",h:"Мысал: Кітап оқу, жаңа нәрсе үйрену, видеоблог жүргізу."},
+  {s:"1",k:"i3",t:"Қандай тақырыптар мені ерекше қызықтырады?",h:"Мысал: Жасанды интеллект, робототехника, ғарыш."},
+  {s:"1",k:"i4",t:"Кітап, видео немесе ойындардың қай түрлері назарымды аударады?",h:"Мысал: Ғылыми фантастика, технология мен бизнес туралы YouTube."},
+  {s:"1",k:"i5",t:"Қандай жұмысты ақша төлемесе де істер едім?",h:"Мысал: Техника жөндеу немесе балаларға сабақ беру."},
+  {s:"2",k:"a1",t:"Қандай тапсырмаларды оңай орындаймын?",h:"Мысал: Логикалық есептерді оңай шешемін."},
+  {s:"2",k:"a2",t:"Қандай істе өзімді сенімді сезінемін?",h:"Мысал: Топтық жобада лидер болғанда."},
+  {s:"2",k:"a3",t:"Басқалар менің қандай қабілетімді жиі байқайды немесе мақтайды?",h:"Мысал: Ұйымдастыру қабілетім мен уақытты басқаруым."},
+  {s:"2",k:"a4",t:"«Мен мынаны жақсы істеймін» деп айтуға негіз болатын 2–3 іс",h:"Мысал: Күрделі есеп шығару, топта нәтижеге жету."},
+  {s:"2",k:"a5",t:"Қандай нәрсеге жылдам үйреніп аламын?",h:"Мысал: Жаңа бағдарламаларды тез меңгеремін."},
+  {s:"3",k:"v1",t:"Мен үшін өмірде не маңызды?",h:"Мысал: Отбасы, адалдық, өзгелерге көмектесу."},
+  {s:"3",k:"v2",t:"Маған қандай нәрсе «бұл дұрыс емес» деп сезінуге себеп болады?",h:"Мысал: Әділетсіздік, алдау."},
+  {s:"3",k:"v3",t:"Маған үлгі болатын адам кім? Ол несімен ұнайды?",h:"Мысал: Әкем, адал әрі табанды."},
+  {s:"3",k:"v4",t:"Болашақта адамдарға қалай көмектескім келеді?",h:"Мысал: Технология арқылы денсаулық не білім саласында."},
+  {s:"3",k:"v5",t:"Қандай істе өзімді пайдалы сезінемін?",h:"Мысал: Волонтерлік, жаңа жобалар."},
+  {s:"4",k:"e1",t:"Жалғыз жұмыс істегенді жақсы көрем бе, әлде топпен бе?",h:""},
+  {s:"4",k:"e2",t:"Қандай ортада өзімді сенімді, еркін сезінемін?",h:"Мысал: Ашық, позитивті адамдардың ортасында."},
+  {s:"4",k:"e3",t:"Тыныш жерде ме, қозғалыс көп жерде ме жақсы жұмыс істеймін?",h:""},
+  {s:"4",k:"e4",t:"Қандай мұғалім/адаммен жұмыс істеу маған ыңғайлы?",h:"Мысал: Түсіністікпен қарайтын, тыңдайтын адам."},
+  {s:"4",k:"e5",t:"Өзімді жақсы жағымнан көрсете алған соңғы жағдайды сипатта",h:"Мысал: Ғылыми жобамды таныстырғанда."},
+  {s:"5",k:"f1",t:"Қай кезде уақыттың қалай өткенін байқамай қаламын?",h:""},
+  {s:"5",k:"f2",t:"Қай іспен айналысқанда көңілім көтеріліп, шабытым артады?",h:""},
+  {s:"5",k:"f3",t:"Соңғы рет бір іске қатты беріліп кеткен жағдайың есіңде ме? Ол қандай іс еді?",h:""},
+  {s:"5",k:"f4",t:"Қандай кезде «міне, бұл менің ісім!» деп сезінемін?",h:""},
+  {s:"5",k:"f5",t:"Сол істерді болашақта мамандыққа айналдырғым келе ме?",h:""},
+  {s:"6",k:"c1",t:"Қандай іс менің табиғи қабілеттеріме сәйкес келеді деп ойлайсың?",h:""},
+  {s:"6",k:"c2",t:"Қызығушылығың мен хоббиіңе сүйенсең, қай мамандықты таңдар едің?",h:""},
+  {s:"6",k:"c3",t:"Қандай мамандықты таңдағанда өзіңді бақытты сезінер едің?",h:""},
+  {s:"6",k:"c4",t:"Қандай мамандықта өзіңді толық көрсетуге мүмкіндігің болады?",h:""},
+  {s:"6",k:"c5",t:"Болашақта қоғамға, ортаға әсер ете алатын қандай мамандық таңдар едің?",h:""},
+  {s:"6",k:"c6",t:"Қандай мамандық сенің ең маңызды құндылықтарыңа сай келеді?",h:""},
+  {s:"6",k:"c7",t:"Сенің ойыңша, қазір ең қызықты және болашағы бар мамандық қандай?",h:""},
+  {s:"6",k:"c8",t:"Қандай мамандық арқылы қоғамда үлкен өзгеріс жасай аласың?",h:""},
+  {s:"6",k:"c9",t:"Өзіңді 10 жылдан кейін қандай мамандықта көресің?",h:""}
+];
+QUESTIONS.forEach((q,i)=>q.n=String(i+1).padStart(2,"0"));
+const IKI=[
+  {k:"love",t:"Не ұнайды?",c:"--c1"},
+  {k:"good",t:"Неге мықтысың?",c:"--c2"},
+  {k:"need",t:"Әлемге не керек?",c:"--c3"},
+  {k:"paid",t:"Не үшін ақша төлейді?",c:"--c4"}
+];
+const QUARTERS=["Қараша 2026 – Қаңтар 2027","Ақпан – Сәуір 2027","Мамыр – Шілде 2027","Тамыз – Қазан 2027"];
+const QHINT=["Практикаға дайындық: орынды бекіту, резюме, қажет дағдыны бастау","2-семестр практикасы: тапсырмалар, тәлімгер, күнделік","Практика қорытындысы, жазғы курс немесе жұмыс","Жаңа оқу жылы: мамандықты тереңдету, келесі қадам"];
+const CHECKS="Желтоқсан 2026 · Наурыз 2027 · Маусым 2027 · Қазан 2027";
+
+const S={db:null,user:null,sample:null,uid:null,owner:false,config:{slotMin:20,lunch:true},slots:{},me:null,myNote:null,students:{},notes:{},sel:null,tab:"day",readonly:false};
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const hm=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+function slotList(){const out=[];const L=S.config.slotMin||20;for(let m=START;m+L<=END;m+=L){if(S.config.lunch!==false&&m<LUNCH[1]&&m+L>LUNCH[0]){if(!out.some(o=>o.lunch))out.push({lunch:true});m=LUNCH[1]-L;continue}out.push({id:"s"+hm(m).replace(":",""),from:hm(m),to:hm(m+L)})}return out}
+function filled(st){if(!st||!st.answers)return 0;return QUESTIONS.filter(q=>(st.answers[q.k]||"").trim()).length}
+function ikiFilled(st){return st&&st.ikigai?IKI.filter(i=>(st.ikigai[i.k]||"").trim()).length:0}
+function mySlot(uid){return Object.entries(S.slots).find(([,v])=>v&&v.uid===uid)?.[0]||null}
+function slotLabel(id){const s=slotList().find(x=>x.id===id);return s?s.from+"–"+s.to:(id?id.slice(1,3)+":"+id.slice(3):"")}
+function flash(el,msg){if(!el)return;el.textContent=msg;clearTimeout(el._t);el._t=setTimeout(()=>{el.textContent=""},4000)}
+
+function ikigaiSvg(ik){
+  ik=ik||{};
+  const pos=[[110,95],[190,95],[110,175],[190,175]];
+  const circles=IKI.map((c,i)=>`<circle cx="${pos[i][0]}" cy="${pos[i][1]}" r="72" fill="var(${c.c})" fill-opacity=".22" stroke="var(${c.c})" stroke-width="1.5"/>`).join("");
+  const lp=[[70,62],[230,62],[70,215],[230,215]];
+  const labels=IKI.map((c,i)=>`<text x="${lp[i][0]}" y="${lp[i][1]}" text-anchor="middle">${esc(c.t.replace("?",""))}</text>`).join("");
+  const center=(ik.center||"").trim();
+  return `<svg viewBox="0 0 300 270" role="img" aria-label="Икигай диаграммасы">${circles}${labels}<circle cx="150" cy="135" r="20" fill="var(--surface)" stroke="var(--ink)" stroke-width="1"/>${center?`<path d="M141 135l6 6 12-12" fill="none" stroke="var(--ok)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`:`<text x="150" y="140" text-anchor="middle" style="font-weight:600">?</text>`}<text x="150" y="262" text-anchor="middle">${esc(center?("Икигай: "+center).slice(0,46):"Ортасы: сенің икигайың")}</text></svg>`;
+}
+
+/* ---------- API (Google Apps Script) ---------- */
+const TOKEN_KEY="3f3-token";
+function getToken(){try{return localStorage.getItem(TOKEN_KEY)||""}catch{return ""}}
+function setToken(t){try{t?localStorage.setItem(TOKEN_KEY,t):localStorage.removeItem(TOKEN_KEY)}catch{}}
+async function api(action,data={}){
+  if(!window.API_URL)throw new Error("no_api");
+  const r=await fetch(window.API_URL,{method:"POST",body:JSON.stringify({action,...data})});
+  const j=await r.json();if(!j.ok)throw new Error(j.error||"error");return j;
+}
+function applyStudent(j){S.me=j.me;S.uid=j.me.id;S.myNote=j.note||null;S.slots=j.slots||{};if(j.config)S.config={...S.config,...j.config}}
+function applyAdmin(j){S.students=j.students||{};S.notes=j.notes||{};S.slots=j.slots||{};if(j.config)S.config={...S.config,...j.config}}
+let pollT;
+function startPoll(fn,ms){clearInterval(pollT);pollT=setInterval(()=>{if(!document.hidden)fn().catch(()=>{})},ms)}
+async function refreshStudent(){const j=await api("me",{token:getToken()});applyStudent(j);rerender()}
+async function refreshAdmin(){const j=await api("admin",{pw:S.pw});applyAdmin(j);rerender()}
+
+/* ---------- boot ---------- */
+async function boot(){
+  const app=$("#app");
+  if(!window.API_URL){app.innerHTML=`<div class="panel"><h2>Баптау керек</h2><p>config.js файлына Google Apps Script веб-қосымшасының сілтемесін (API_URL) қойыңыз. Нұсқаулық README.md файлында.</p></div>`;return}
+  if(location.hash==="#teacher"){teacherLogin();return}
+  const t=getToken();
+  if(!t){renderWelcome();return}
+  try{const j=await api("me",{token:t});applyStudent(j);renderStudent();startPoll(refreshStudent,30000)}
+  catch(e){if(e.message==="not_found"){setToken("");renderWelcome("Код табылмады. Қайта тіркел немесе кодты тексер.")}else app.innerHTML=`<div class="panel"><div class="banner err">Байланыс болмады. Интернетті тексеріп, бетті жаңарт.</div></div>`}
+}
+function renderWelcome(err){
+  const app=$("#app");
+  app.innerHTML=`<form class="panel" id="reg"><h2>Тіркелу</h2><p class="muted">Атыңды жаз, сосын өзіңе ыңғайлы уақытты таңдайсың.</p>
+    ${err?`<div class="banner err">${esc(err)}</div>`:""}
+    <div class="grid2"><label for="r-name">Аты-жөні<input id="r-name" required autocomplete="name" placeholder="Мысалы: Айгерім Серікова"></label>
+    <label for="r-contact">Телефон немесе Telegram<input id="r-contact" placeholder="+7 7__ ___ __ __ / @username"></label></div>
+    <div class="row"><button class="primary" type="submit">Тіркелу</button><span class="saved" id="r-msg"></span></div></form>
+  <form class="panel" id="login"><h2>Бұрын тіркелдім</h2><p class="muted">Басқа телефоннан не браузерден кірсең, тіркелгенде берілген кодыңды жаз.</p>
+    <div class="row"><label for="l-code" style="flex:1 1 220px">Жеке код<input id="l-code" autocomplete="off" spellcheck="false"></label><button type="submit">Кіру</button></div><span class="saved" id="l-msg"></span></form>
+  <p class="muted" style="text-align:center"><a href="#teacher" id="to-teacher">Мұғалімге кіру</a></p>`;
+  $("#to-teacher").onclick=e=>{e.preventDefault();location.hash="teacher";teacherLogin()};
+  $("#reg").addEventListener("submit",async e=>{e.preventDefault();const name=$("#r-name").value.trim();if(!name)return;const b=e.submitter;if(b)b.disabled=true;
+    try{const j=await api("register",{name,contact:$("#r-contact").value.trim()});setToken(j.token);await refreshStudent().catch(()=>{});S.justRegistered=true;renderStudent();startPoll(refreshStudent,30000)}
+    catch{flash($("#r-msg"),"Тіркелу болмады, қайта көр.");if(b)b.disabled=false}});
+  $("#login").addEventListener("submit",async e=>{e.preventDefault();const code=$("#l-code").value.trim();if(!code)return;
+    try{const j=await api("me",{token:code});setToken(code);applyStudent(j);renderStudent();startPoll(refreshStudent,30000)}catch{flash($("#l-msg"),"Код табылмады.")}});
+}
+function teacherLogin(){
+  const app=$("#app");
+  app.innerHTML=`<form class="panel" id="tl"><h2>Мұғалімге кіру</h2><label for="t-pw">Құпиясөз<input id="t-pw" type="password" autocomplete="current-password"></label><div class="row"><button class="primary" type="submit">Кіру</button><span class="saved" id="t-msg"></span></div></form>`;
+  $("#tl").addEventListener("submit",async e=>{e.preventDefault();S.pw=$("#t-pw").value;
+    try{const j=await api("admin",{pw:S.pw});S.owner=true;applyAdmin(j);renderTeacher();startPoll(refreshAdmin,30000)}catch(err){flash($("#t-msg"),err.message==="bad_password"?"Құпиясөз қате.":"Байланыс болмады.")}});
+}
+let rrT;function rerender(notesOnly){clearTimeout(rrT);rrT=setTimeout(()=>{if(S.owner)renderTeacher(notesOnly);else if(S.me!==null)renderStudentDynamic()},60)}
+
+/* ---------- student ---------- */
+function renderStudent(){
+  const app=$("#app");const me=S.me||{};
+  if(!me.name){renderWelcome();return}
+  const a=me.answers||{},ik=me.ikigai||{};
+  app.innerHTML=`
+  <div class="tabs" role="tablist">
+    <button role="tab" data-t="day" aria-selected="${S.tab==="day"}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Уақыт</button>
+    <button role="tab" data-t="prep" aria-selected="${S.tab==="prep"}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg>Дайындық</button>
+    <button role="tab" data-t="plan" aria-selected="${S.tab==="plan"}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>Менің жоспарым</button>
+  </div>
+  <div class="banner codebox"><span>Жеке кодың: <b id="my-code"></b></span><button type="button" id="copy-code">Көшіру</button><small class="muted">Басқа құрылғыдан кіру үшін сақтап қой. Ешкімге берме.</small></div>
+  <section class="panel" id="t-day"></section>
+  <form class="panel" id="t-prep">
+    <div><h2>Кездесуге дайындал</h2><p class="muted">Жауаптарды тек сен және мұғалім көреді. Бөлім бойынша толтырып, «Сақтау» бас. Кейін қайта өзгертуге болады.</p></div>
+    ${SECTIONS.map((sec,si)=>{const qs=QUESTIONS.filter(q=>q.s===sec.id);return`<details class="sec" ${si===0?"open":""}><summary><span>${esc(sec.t)}</span><span class="pill" data-cnt="${sec.id}">${qs.filter(q=>(a[q.k]||"").trim()).length}/${qs.length}</span></summary>${sec.d?`<p class="muted">${esc(sec.d)}</p>`:""}
+      ${qs.map(q=>`<label class="q" for="a-${q.k}"><span class="n">${q.n}</span>${esc(q.t)}${q.h?`<small>${esc(q.h)}</small>`:""}${q.link?`<a href="${q.link}" target="_blank" rel="noopener">Тестті ашу</a>`:""}<textarea id="a-${q.k}" data-a="${q.k}">${esc(a[q.k]||"")}</textarea></label>`).join("")}</details>`}).join("")}
+    <details class="sec"><summary><span>Икигай</span><span class="pill">${IKI.filter(i=>(ik[i.k]||"").trim()).length}/4</span></summary>
+    <p class="muted">Төрт шеңберді толтыр. Ортасы — төртеуі қиылысатын жер, сенің ісің. Қағазға да сызып әкелуге болады.</p>
+    <div class="ikigai"><div id="iki-svg">${ikigaiSvg(ik)}</div>
+      <div class="grid2">${IKI.map(i=>`<label for="i-${i.k}">${esc(i.t)}<textarea id="i-${i.k}" data-i="${i.k}">${esc(ik[i.k]||"")}</textarea></label>`).join("")}
+      <label for="i-center" style="grid-column:1/-1">Менің икигайым (бір сөйлем)<input id="i-center" data-i="center" value="${esc(ik.center||"")}"></label></div></div></details>
+    <div class="row savebar"><button class="primary" type="submit">Жауаптарды сақтау</button><span class="saved" id="p-msg"></span></div>
+  </form>
+  <section class="panel idp-view" id="t-plan"></section>`;
+  app.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{S.tab=b.dataset.t;app.querySelectorAll("[data-t]").forEach(x=>x.setAttribute("aria-selected",x===b));showTab()});
+  const f=$("#t-prep");
+  f.addEventListener("input",e=>{if(e.target.dataset.i){$("#iki-svg").innerHTML=ikigaiSvg(collectIki())}
+    const k=e.target.dataset.a;if(k){const sec=QUESTIONS.find(q=>q.k===k).s;const qs=QUESTIONS.filter(q=>q.s===sec);const c=f.querySelector(`[data-cnt="${sec}"]`);if(c)c.textContent=qs.filter(q=>($("#a-"+q.k).value||"").trim()).length+"/"+qs.length}});
+  f.addEventListener("submit",async e=>{e.preventDefault();const msg=$("#p-msg");
+    const answers={};f.querySelectorAll("[data-a]").forEach(t=>answers[t.dataset.a]=t.value);
+    const flat=QUESTIONS.map(q=>[q.n+". "+q.t,answers[q.k]||""]).concat(IKI.map(i=>["Икигай: "+i.t,collectIki()[i.k]||""]),[["Икигай: менің ісім",collectIki().center||""]]);
+    try{await api("save",{token:getToken(),answers,ikigai:collectIki(),flat});S.me={...S.me,answers,ikigai:collectIki()};flash(msg,"Сақталды")}catch(err){flash(msg,"Сақталмады. Интернетті тексеріп, қайта бас.")}});
+  $("#my-code").textContent=getToken();
+  $("#copy-code").onclick=async()=>{try{await navigator.clipboard.writeText(getToken());$("#copy-code").textContent="Көшірілді"}catch{const r=document.createRange();r.selectNodeContents($("#my-code"));getSelection().removeAllRanges();getSelection().addRange(r)}};
+  showTab();renderStudentDynamic();
+}
+function collectIki(){const o={};document.querySelectorAll("[data-i]").forEach(t=>o[t.dataset.i]=t.value);return o}
+function showTab(){["day","prep","plan"].forEach(t=>{const el=$("#t-"+t);if(el)el.hidden=S.tab!==t})}
+function renderStudentDynamic(){
+  if(!S.me||!S.me.name){renderStudent();return}
+  const day=$("#t-day");if(!day){renderStudent();return}
+  const mine=mySlot(S.uid);
+  const list=slotList();
+  day.innerHTML=`<div><h2>Кездесу уақытын таңда</h2><p class="muted">${S.config.slotMin} минуттық кездесу. ${mine?`Сенің уақытың: <b>${slotLabel(mine)}</b>. Ауыстыру үшін басқа бос уақытты бас.`:"Бос уақыттың біреуін бас."}</p></div>
+  ${S.config.closed?`<div class="banner">Жазылу жабық. Мұғалімге хабарлас.</div>`:""}
+  <div class="slots">${list.map(s=>{if(s.lunch)return`<div class="lunch">13:00–14:00 түскі үзіліс</div>`;const v=S.slots[s.id];const isMine=v&&v.uid===S.uid;const taken=v&&v.uid&&!isMine;
+    return`<button class="slot ${isMine?"mine":taken?"taken":"free"}" data-s="${s.id}" ${taken||S.config.closed?"disabled":""} aria-label="${s.from}–${s.to} ${isMine?"сенің уақытың":taken?"бос емес":"бос"}">${s.from}</button>`}).join("")}</div>
+  <div class="row">${mine?`<button class="ghost danger" id="unbook">Жазылудан бас тарту</button>`:""}<span class="saved" id="b-msg"></span></div>`;
+  day.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>book(b.dataset.s));
+  const ub=$("#unbook");if(ub)ub.onclick=async()=>{try{const j=await api("unbook",{token:getToken()});S.slots=j.slots;rerender();setTimeout(()=>flash($("#b-msg"),"Жазылу жойылды"),100)}catch{flash($("#b-msg"),"Болмады, қайта көр")}};
+  showTab();
+  renderPlanView($("#t-plan"),S.myNote);
+}
+async function book(id){
+  const msg=$("#b-msg");const cur=mySlot(S.uid);if(cur===id)return;
+  flash(msg,"Жазылып жатыр…");
+  try{const j=await api("book",{token:getToken(),slot:id});S.slots=j.slots;rerender();setTimeout(()=>flash($("#b-msg"),"Жазылдың: "+slotLabel(id)),100)}
+  catch(e){flash(msg,e.message==="taken"?"Бұл уақытты біреу алып қойды. Басқасын таңда.":e.message==="closed"?"Жазылу жабық.":"Болмады, қайта көр.");refreshStudent().catch(()=>{})}
+}
+function txt(v){return`<p style="white-space:pre-wrap">${esc(v)}</p>`}
+function block(label,v){return v&&String(v).trim()?`<div class="iblock"><span class="eyebrow">${esc(label)}</span>${txt(v)}</div>`:""}
+function renderPlanView(el,n){
+  if(!el)return;
+  if(!n||(!n.notes&&!n.plan&&!n.idp)){el.innerHTML=`<h2>Менің жоспарым</h2><p class="muted">Кездесуден кейін мұғалім осында жазба, келесі қадамдар және 1 жылдық жеке даму жоспарыңды (IDP) қалдырады. Мұны тек сен көресің.</p>`;return}
+  const p=n.idp||{};const goals=(p.goals||[]).filter(g=>g&&(g.goal||"").trim());
+  el.innerHTML=`<h2>Менің жоспарым</h2>
+  ${n.notes?`<div class="note"><span class="eyebrow">Мұғалімнің жазбасы</span>${txt(n.notes)}</div>`:""}
+  ${n.plan?`<div class="note"><span class="eyebrow">Келесі қадамдар</span>${txt(n.plan)}</div>`:""}
+  ${n.idp?`<div class="idp-title"><span class="eyebrow">Жеке даму жоспары · Қараша 2026 – Қазан 2027</span><h3>${esc(p.goal||"")}</h3>${p.direction?`<p><b>Кәсіби бағыт:</b> ${esc(p.direction)}</p>`:""}</div>
+  ${(p.gallup||p.gallupWeak||p.mbti||p.gardner)?`<h3 class="idp-h">1. Тұлға психотипі</h3><div class="grid2">${block("Gallup: ТОП-5 талант",p.gallup)}${block("Gallup: әлсіз таланттар",p.gallupWeak)}${block("MBTI",p.mbti)}${block("Гарднер: басым интеллект",p.gardner)}</div>`:""}
+  <h3 class="idp-h">2. Даму жоспары</h3>
+  ${goals.length?`<div class="tablebox"><table class="sheet gtable"><thead><tr><th>Даму мақсаты</th><th>Күтілетін нәтиже</th><th>Мерзімі</th><th>Табыстылық көрсеткіші</th></tr></thead><tbody>${goals.map(g=>`<tr><td>${esc(g.goal)}</td><td>${esc(g.result)}</td><td>${esc(g.deadline)}</td><td>${esc(g.kpi)}</td></tr>`).join("")}</tbody></table></div>`:""}
+  ${block("Өзін-өзі дамыту",p.selfdev)}
+  ${(p.quarters||[]).map((q,i)=>(q.focus||q.actions||q.result)?`<div class="q-quarter"><span class="eyebrow">${esc(QUARTERS[i])}</span>${q.focus?`<h3>${esc(q.focus)}</h3>`:""}${q.actions?txt(q.actions):""}${q.result?`<p class="muted"><b>Нәтиже:</b> ${esc(q.result)}</p>`:""}</div>`:"").join("")}
+  ${(p.talents||p.professions||p.books)?`<h3 class="idp-h">3. Ұсыныстар</h3>${block("Таланттар мен қабілеттерді дамыту",p.talents)}${block("Кәсіби бағыттар",p.professions)}${block("Кітаптар мен фильмдер",p.books)}`:""}
+  <h3 class="idp-h">4. Трекинг</h3>${txt(p.tracking||TRACK)}`:""}`;
+}
+
+/* ---------- teacher ---------- */
+function teacherShell(){
+  const app=$("#app");
+  app.innerHTML=`<section class="panel" id="t-sum"></section>
+  <div class="tabs" role="tablist">
+    <button role="tab" data-t="day" aria-selected="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Күн кестесі</button>
+    <button role="tab" data-t="answers" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Барлық жауаптар</button>
+    <button role="tab" data-t="people" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg>Студенттер</button>
+    <button role="tab" data-t="set" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Баптау</button>
+  </div>
+  <section class="panel" id="t-day"></section>
+  <section class="panel" id="t-answers" hidden></section>
+  <section class="panel" id="t-people" hidden></section>
+  <section class="panel" id="t-set" hidden></section>
+  <section class="panel" id="t-student" hidden></section>`;
+  app.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{S.tab=b.dataset.t;app.querySelectorAll("[data-t]").forEach(x=>x.setAttribute("aria-selected",x===b));["day","answers","people","set"].forEach(t=>$("#t-"+t).hidden=t!==S.tab)});
+}
+function renderTeacher(notesOnly){
+  if(!$("#t-sum"))teacherShell();
+  const list=slotList().filter(s=>!s.lunch);
+  const ids=Object.keys(S.students);
+  const booked=list.filter(s=>S.slots[s.id]?.uid).length;
+  const ready=ids.filter(id=>filled(S.students[id])>=30).length;
+  $("#t-sum").innerHTML=`<div class="row" style="justify-content:space-between"><h2>Мұғалім панелі</h2><div class="row"><button type="button" class="ghost" id="t-refresh">Жаңарту</button><span class="pill">Тек сіз көресіз</span></div></div>
+  <div class="stats"><div class="stat"><b>${ids.length}</b><span>тіркелді</span></div><div class="stat"><b>${booked}/${list.length}</b><span>уақыт брондалды</span></div><div class="stat"><b>${ready}</b><span>дайындықты толтырды</span></div><div class="stat"><b>${Object.values(S.notes).filter(n=>n.idp).length}</b><span>IDP дайын</span></div></div>`;
+  {
+    $("#t-day").innerHTML=`<h2>15 қазан кестесі</h2><div class="tablebox"><table class="sheet"><thead><tr><th>Уақыт</th><th>Студент</th><th>Дайындық</th><th></th></tr></thead><tbody>
+    ${slotList().map(s=>{if(s.lunch)return`<tr class="break"><td>13:00</td><td colspan="3">Түскі үзіліс</td></tr>`;const v=S.slots[s.id];const st=v&&S.students[v.uid];
+      return`<tr><td>${s.from}–${s.to}</td><td>${v?.uid?esc(st?.name||"Тіркелмеген"):`<span class="muted">бос</span>`}</td><td>${st?prepPill(st):""}</td><td>${v?.uid?`<div class="row"><button data-open="${esc(v.uid)}">Ашу</button><button class="ghost danger" data-free="${s.id}">Босату</button></div>`:""}</td></tr>`}).join("")}
+    </tbody></table></div>`;
+    const people=ids.sort((a,b)=>(S.students[a].name||"").localeCompare(S.students[b].name||""));
+    $("#t-people").innerHTML=`<h2>Студенттер</h2>${people.length?`<div class="studentlist">${people.map(id=>{const st=S.students[id];const sl=mySlot(id);return`<button data-open="${esc(id)}"><span><b>${esc(st.name)}</b><br><span class="muted">${sl?slotLabel(sl):"уақыт таңдамаған"}${st.contact?" · "+esc(st.contact):""}</span></span><span>${prepPill(st)} ${S.notes[id]?.idp?'<span class="pill ok">IDP</span>':""}</span></button>`}).join("")}</div>`:`<p class="muted">Әзірге ешкім тіркелмеді. Сілтемені топқа жіберіңіз: студенттер атын жазып, уақыт таңдағанда осында шығады.</p>`}`;
+    const anyBooked=Object.values(S.slots).some(v=>v&&v.uid);
+    $("#t-set").innerHTML=`<h2>Баптау</h2><div class="grid2">
+      <label for="c-len">Бір кездесу ұзақтығы<select id="c-len" ${anyBooked?"disabled":""}>${[15,20,25,30].map(n=>`<option value="${n}" ${S.config.slotMin==n?"selected":""}>${n} минут</option>`).join("")}</select><small>${anyBooked?"Брондау басталған соң өзгерту жабық.":"Студенттер жазылмай тұрып таңдаңыз."}</small></label>
+      <label for="c-lunch">Түскі үзіліс 13:00–14:00<select id="c-lunch" ${anyBooked?"disabled":""}><option value="1" ${S.config.lunch!==false?"selected":""}>Иә</option><option value="0" ${S.config.lunch===false?"selected":""}>Жоқ</option></select></label>
+      <label for="c-closed">Жазылу<select id="c-closed"><option value="0" ${!S.config.closed?"selected":""}>Ашық</option><option value="1" ${S.config.closed?"selected":""}>Жабық</option></select></label></div>
+      <p class="muted">${list.length} уақыт бар. Студенттер көп болса, 15 минутты таңдаңыз.</p><span class="saved" id="c-msg"></span>`;
+    $("#t-set").querySelectorAll("select").forEach(sel=>sel.onchange=async()=>{try{const j=await api("config",{pw:S.pw,config:{slotMin:+$("#c-len").value,lunch:$("#c-lunch").value==="1",closed:$("#c-closed").value==="1"}});S.config={...S.config,...j.config};rerender();flash($("#c-msg"),"Сақталды")}catch{flash($("#c-msg"),"Сақталмады")}});
+    document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openStudent(b.dataset.open));
+    document.querySelectorAll("[data-free]").forEach(b=>b.onclick=async()=>{if(b.dataset.armed){try{await api("free",{pw:S.pw,slot:b.dataset.free});await refreshAdmin()}catch{b.textContent="Болмады"}}else{b.dataset.armed="1";b.textContent="Растау"}});
+  }
+  renderAnswers();
+  const rf=$("#t-refresh");if(rf)rf.onclick=()=>refreshAdmin().catch(()=>{});
+  if(S.sel)renderStudentHead();
+}
+function renderAnswers(){
+  const el=$("#t-answers");if(!el)return;
+  const ids=Object.keys(S.students).sort((a,b)=>(S.students[a].name||"").localeCompare(S.students[b].name||""));
+  const mode=S.aMode||"q",pick=S.aQ||"all";
+  const items=[...QUESTIONS.map(q=>({k:q.k,s:q.s,t:q.t,n:q.n,get:st=>(st.answers||{})[q.k]})),
+    ...IKI.map(i=>({k:"iki-"+i.k,t:"Икигай: "+i.t,n:"ИК",get:st=>(st.ikigai||{})[i.k]})),{k:"iki-center",t:"Икигай: менің ісім",n:"ИК",get:st=>(st.ikigai||{}).center}];
+  const resp=(st,id,v)=>`<div class="resp"><div class="who"><button data-open="${esc(id)}">${esc(st.name||"Студент")}</button></div><div class="txt ${(v||"").trim()?"":"empty"}">${esc((v||"").trim()||"жауап жоқ")}</div></div>`;
+  let body;
+  if(!ids.length)body=`<p class="muted">Студенттер тіркеліп, жауап жазғанда осында әр сұрақ бойынша бәрінің жауабы қатар шығады.</p>`;
+  else if(mode==="q"){
+    const shown=pick==="all"?items:items.filter(it=>it.k===pick);
+    body=`<label for="a-pick" class="pickl">Сұрақты таңдаңыз<select id="a-pick"><option value="all" ${pick==="all"?"selected":""}>Барлық сұрақ (${items.length})</option>${SECTIONS.map(sec=>`<optgroup label="${esc(sec.t)}">${items.filter(it=>it.s===sec.id).map(it=>`<option value="${it.k}" ${pick===it.k?"selected":""}>${it.n}. ${esc(it.t)}</option>`).join("")}</optgroup>`).join("")}<optgroup label="Икигай">${items.filter(it=>!it.s).map(it=>`<option value="${it.k}" ${pick===it.k?"selected":""}>${esc(it.t)}</option>`).join("")}</optgroup></select></label>
+    ${shown.map(it=>{const cnt=ids.filter(id=>(it.get(S.students[id])||"").trim()).length;return`<div class="qcard"><div class="row" style="justify-content:space-between"><h3><span class="n">${it.n}</span>${esc(it.t)}</h3><span class="pill">${cnt}/${ids.length} жауап</span></div>${ids.map(id=>resp(S.students[id],id,it.get(S.students[id]))).join("")}</div>`}).join("")}`;
+  }else{
+    body=ids.map(id=>{const st=S.students[id];return`<div class="qcard"><div class="row" style="justify-content:space-between"><h3>${esc(st.name)}</h3>${prepPill(st)}</div>${items.map((it,ix)=>(ix===0||items[ix-1].s!==it.s?`<span class="eyebrow" style="margin-top:6px">${esc((SECTIONS.find(x=>x.id===it.s)||{t:"Икигай"}).t)}</span>`:"")+`<div class="resp"><div class="who muted" style="font-weight:500">${esc(it.t)}</div><div class="txt ${(it.get(st)||"").trim()?"":"empty"}">${esc((it.get(st)||"").trim()||"жауап жоқ")}</div></div>`).join("")}</div>`}).join("");
+  }
+  const open=document.activeElement&&el.contains(document.activeElement)?document.activeElement.dataset:null;
+  el.innerHTML=`<div class="row" style="justify-content:space-between"><h2>Барлық жауаптар</h2><div class="seg"><button data-m="q" aria-pressed="${mode==="q"}">Сұрақ бойынша</button><button data-m="s" aria-pressed="${mode==="s"}">Студент бойынша</button></div></div>${body}`;
+  el.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{S.aMode=b.dataset.m;renderAnswers()});
+  const ap=$("#a-pick");if(ap)ap.onchange=()=>{S.aQ=ap.value;renderAnswers()};
+  el.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openStudent(b.dataset.open));
+}
+function prepPill(st){const n=filled(st),k=ikiFilled(st);const cls=n>=30&&k>=3?"ok":n>=1?"warn":"";return`<span class="pill ${cls}">${n}/${QUESTIONS.length} сұрақ${k?` · икигай ${k}/4`:""}</span>`}
+function openStudent(id){S.sel=id;const el=$("#t-student");el.hidden=false;buildStudentEditor();el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})}
+function renderStudentHead(){const h=$("#s-head");if(!h)return;const st=S.students[S.sel]||{};const sl=mySlot(S.sel);
+  h.innerHTML=`<div class="row" style="justify-content:space-between"><div><span class="eyebrow">${sl?slotLabel(sl):"уақыт таңдамаған"}</span><h2>${esc(st.name||"Студент")}</h2>${st.contact?`<p class="muted">${esc(st.contact)}</p>`:""}</div><button class="ghost" id="s-close">Жабу</button></div>`;
+  $("#s-close").onclick=()=>{S.sel=null;$("#t-student").hidden=true};
+  const ans=$("#s-answers");if(ans)ans.innerHTML=answersHtml(st);
+  const g=$("#gen");if(g)g.hidden=!S.sample;
+}
+function answersHtml(st){const a=st.answers||{};return SECTIONS.map(sec=>`<h3 style="margin-top:8px">${esc(sec.t)}</h3>`+QUESTIONS.filter(q=>q.s===sec.id).map(q=>`<div class="q"><span class="n">${q.n}</span><b>${esc(q.t)}</b><div class="answer ${a[q.k]?.trim()?"":"empty"}">${esc(a[q.k]?.trim()||"жауап жоқ")}</div></div>`).join("")).join("")+
+  `<h3>Икигай</h3><div class="ikigai">${ikigaiSvg(st.ikigai)}<div class="grid2">${IKI.map(i=>`<div><span class="eyebrow">${esc(i.t)}</span><div class="answer ${st.ikigai?.[i.k]?.trim()?"":"empty"}">${esc(st.ikigai?.[i.k]?.trim()||"жоқ")}</div></div>`).join("")}</div></div>`}
+const TRACK="Айына 1 рет куратормен жеке кездесу: жоспарды тексеру және түзету.\nБақылау кездесулері: Желтоқсан 2026 · Наурыз 2027 · Маусым 2027 · Қазан 2027";
+function emptyIdp(st){const a=(st&&st.answers)||{};return{goal:"",direction:"",gallup:a.gallup||"",gallupWeak:"",mbti:a.mbti||"",gardner:a.gardner||"",goals:[0,1,2,3].map(()=>({goal:"",result:"",deadline:"",kpi:""})),selfdev:"",quarters:QUARTERS.map(()=>({focus:"",actions:"",result:""})),talents:"",professions:"",books:"",tracking:TRACK}}
+function buildStudentEditor(){
+  const el=$("#t-student");const id=S.sel;const n=S.notes[id]||{};const st=S.students[id]||{};const p={...emptyIdp(st),...(n.idp||{})};
+  const goals=[0,1,2,3].map(i=>(p.goals||[])[i]||{});
+  el.innerHTML=`<div id="s-head"></div>
+  <details><summary><b>Студенттің жауаптары</b></summary><div id="s-answers" style="display:flex;flex-direction:column;gap:8px;margin-top:10px"></div></details>
+  <form id="s-form" style="display:flex;flex-direction:column;gap:14px">
+    <div class="banner">Төмендегінің бәрін тек осы студент көреді.</div>
+    <label for="n-notes">Кездесудегі жазба<textarea id="n-notes" rows="5" placeholder="Не айтты, не байқадыңыз, келісімдер">${esc(n.notes||"")}</textarea></label>
+    <label for="n-plan">Келесі қадамдар (жақын 2–4 апта)<textarea id="n-plan" rows="4" placeholder="1. Практика орнымен келісімшартқа қол қою — 1 қарашаға дейін">${esc(n.plan||"")}</textarea></label>
+    <div class="row" style="justify-content:space-between"><h2>Жеке даму жоспары (IDP), 1 жыл</h2><div class="row"><button type="button" id="gen" ${S.sample?"":"hidden"}>Жауаптардан IDP жобасын жасау</button><span class="saved" id="gen-msg"></span></div></div>
+    <label for="d-goal">Бір жылдық басты мақсат<input id="d-goal" value="${esc(p.goal)}" placeholder="Қазан 2027-ге дейін ... саласында алғашқы ақылы жұмысқа шығу"></label>
+    <label for="d-direction">Кәсіби бағыт<input id="d-direction" value="${esc(p.direction)}"></label>
+    <h3 class="idp-h">1. Тұлға психотипі</h3>
+    <div class="grid2"><label for="d-gallup">Gallup: ТОП-5 талант<textarea id="d-gallup">${esc(p.gallup)}</textarea></label>
+    <label for="d-gallupWeak">Gallup: әлсіз таланттар және не істеу керек<textarea id="d-gallupWeak">${esc(p.gallupWeak)}</textarea></label>
+    <label for="d-mbti">MBTI: тип, күшті және әлсіз жақтар, оқу стилі<textarea id="d-mbti">${esc(p.mbti)}</textarea></label>
+    <label for="d-gardner">Гарднер: басым интеллект түрлері<textarea id="d-gardner">${esc(p.gardner)}</textarea></label></div>
+    <h3 class="idp-h">2. Даму жоспары</h3>
+    <div class="goalgrid"><span class="eyebrow">Даму мақсаты</span><span class="eyebrow">Күтілетін нәтиже</span><span class="eyebrow">Мерзімі</span><span class="eyebrow">Табыстылық көрсеткіші</span>
+    ${goals.map((g,i)=>`<input id="g${i}-goal" aria-label="Мақсат ${i+1}" value="${esc(g.goal)}" placeholder="Мақсат ${i+1}"><input id="g${i}-result" aria-label="Нәтиже ${i+1}" value="${esc(g.result)}"><input id="g${i}-deadline" aria-label="Мерзім ${i+1}" value="${esc(g.deadline)}" placeholder="мыс. Наурыз 2027"><input id="g${i}-kpi" aria-label="Көрсеткіш ${i+1}" value="${esc(g.kpi)}">`).join("")}</div>
+    <label for="d-selfdev">Өзін-өзі дамыту (әдеттер, оқу, тақырыптар)<textarea id="d-selfdev">${esc(p.selfdev)}</textarea></label>
+    ${QUARTERS.map((qt,i)=>{const q=(p.quarters||[])[i]||{};return`<div class="q-quarter"><span class="eyebrow">${qt}</span>
+      <label for="q${i}-focus">Мақсат<input id="q${i}-focus" value="${esc(q.focus)}" placeholder="${esc(QHINT[i])}"></label>
+      <label for="q${i}-actions">Негізгі іс-шаралар<textarea id="q${i}-actions">${esc(q.actions)}</textarea></label>
+      <label for="q${i}-result">Нәтиже<input id="q${i}-result" value="${esc(q.result)}"></label></div>`}).join("")}
+    <h3 class="idp-h">3. Ұсыныстар</h3>
+    <label for="d-talents">Таланттар мен қабілеттерді дамыту<textarea id="d-talents">${esc(p.talents)}</textarea></label>
+    <div class="grid2"><label for="d-professions">Кәсіби бағыттар<textarea id="d-professions">${esc(p.professions)}</textarea></label>
+    <label for="d-books">Кітаптар мен фильмдер<textarea id="d-books">${esc(p.books)}</textarea></label></div>
+    <h3 class="idp-h">4. Трекинг</h3>
+    <label for="d-tracking" class="sr">Трекинг<textarea id="d-tracking">${esc(p.tracking)}</textarea></label>
+    <div class="row savebar"><button class="primary" type="submit">Сақтау және студентке көрсету</button><span class="saved" id="s-msg"></span></div>
+  </form>`;
+  renderStudentHead();
+  $("#s-form").addEventListener("submit",async e=>{e.preventDefault();
+    try{const note={notes:$("#n-notes").value,plan:$("#n-plan").value,idp:readIdp(),updatedAt:new Date().toISOString()};await api("saveNote",{pw:S.pw,id,note});S.notes[id]=note;flash($("#s-msg"),"Сақталды. Студент өз бетінде көреді.")}catch{flash($("#s-msg"),"Сақталмады, қайта басыңыз.")}});
+  const g=$("#gen");if(g)g.onclick=()=>generate(id);
+}
+const IDF=["goal","direction","gallup","gallupWeak","mbti","gardner","selfdev","talents","professions","books","tracking"];
+function readIdp(){const o={};IDF.forEach(k=>o[k]=$("#d-"+k).value);
+  o.goals=[0,1,2,3].map(i=>({goal:$(`#g${i}-goal`).value,result:$(`#g${i}-result`).value,deadline:$(`#g${i}-deadline`).value,kpi:$(`#g${i}-kpi`).value}));
+  o.quarters=QUARTERS.map((_,i)=>({period:QUARTERS[i],focus:$(`#q${i}-focus`).value,actions:$(`#q${i}-actions`).value,result:$(`#q${i}-result`).value}));return o}
+function fillIdp(p){const set=(s,v)=>{if(v!=null&&v!==""&&$(s))$(s).value=Array.isArray(v)?v.join("\n"):v};
+  IDF.forEach(k=>set("#d-"+k,p[k]));
+  (p.goals||[]).slice(0,4).forEach((g,i)=>{set(`#g${i}-goal`,g.goal);set(`#g${i}-result`,g.result);set(`#g${i}-deadline`,g.deadline);set(`#g${i}-kpi`,g.kpi)});
+  (p.quarters||[]).slice(0,4).forEach((q,i)=>{set(`#q${i}-focus`,q.focus);set(`#q${i}-actions`,q.actions);set(`#q${i}-result`,q.result)})}
+async function generate(id){
+  const btn=$("#gen"),msg=$("#gen-msg");const st=S.students[id]||{};btn.disabled=true;msg.textContent="Жоба жазылып жатыр…";
+  const qa=SECTIONS.map(sec=>`## ${sec.t}\n`+QUESTIONS.filter(q=>q.s===sec.id).map(q=>`${q.t}\n${(st.answers||{})[q.k]||"(жауап жоқ)"}`).join("\n")).join("\n\n");
+  const ik=IKI.map(i=>`${i.t} ${(st.ikigai||{})[i.k]||"-"}`).join("\n")+`\nИкигай: ${(st.ikigai||{}).center||"-"}`;
+  const prompt=`Сен колледж кураторына көмектесесің. 3F3 тобының студентіне 1 жылдық жеке даму жоспарын (IDP) қазақ тілінде жаз. Кезең: Қараша 2026 – Қазан 2027. 2-семестрде (Ақпан–Сәуір 2027) студент өндірістік практикаға барады.
+Құрылым: 1) Тұлға психотипі (Gallup, MBTI, Гарднер нәтижелерін түсіндіру), 2) Даму жоспары (мақсат / күтілетін нәтиже / мерзім / табыстылық көрсеткіші кестесі, өзін-өзі дамыту, 4 кезең), 3) Ұсыныстар (таланттарды дамыту, кәсіби бағыттар, кітаптар мен фильмдер), 4) Трекинг.
+Нақты, өлшенетін, студенттің жауаптарына сүйенген жоспар жаз. Тест нәтижесі жоқ болса, сол өрісті бос қалдыр немесе "тестті тапсыру" деп жаз. Ойдан шығарма.
+
+Студенттің жауаптары:
+${qa}
+
+Икигай:
+${ik}
+
+Мұғалімнің кездесудегі жазбасы:
+${$("#n-notes").value||"(жоқ)"}
+
+Тек JSON қайтар, барлық мәндер жол (string), тізімді жаңа жолмен бөл:
+{"goal":"бір сөйлем","direction":"кәсіби бағыт","gallup":"ТОП-5 талант және қысқа түсіндірме","gallupWeak":"әлсіз таланттар және не істеу керек","mbti":"тип, күшті/әлсіз жақтар, оқу стилі","gardner":"басым интеллект түрлері және мағынасы","goals":[{"goal":"","result":"","deadline":"","kpi":""}, ... 4 мақсат],"selfdev":"5-7 нақты әдет/тапсырма","quarters":[{"focus":"","actions":"","result":""}, ... 4 кезең: ${QUARTERS.join("; ")}],"talents":"","professions":"5-8 нақты мамандық","books":"4-6 кітап/фильм","tracking":"бақылау тәртібі"}`;
+  try{const r=await S.sample.json(prompt,{modelTier:"default"});fillIdp(r||{});msg.textContent="Жоба дайын. Тексеріп, түзетіп, Сақтау басыңыз."}
+  catch(e){msg.textContent=e.code==="not_granted"?"Claude-ға рұқсат берілмеді. Жоспарды қолмен толтырыңыз.":e.code==="rate_limited"?"Сұрау көп болды, біраздан кейін қайталаңыз.":"Жоба жасалмады. Қолмен толтырыңыз немесе қайта көріңіз."}
+  finally{btn.disabled=false}
+}
+boot();
+</script>
+
+</body>
+</html>
