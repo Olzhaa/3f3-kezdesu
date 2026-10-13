@@ -428,7 +428,7 @@ function renderStudentDynamic(){
 async function book(id){
   const msg=$("#b-msg");const cur=mySlot(S.uid);if(cur===id)return;
   flash(msg,"Жазылып жатыр…");
-  try{const j=await api("book",{token:getToken(),slot:id});S.slots=j.slots;rerender();setTimeout(()=>flash($("#b-msg"),"Жазылдың: "+slotLabel(id)),100)}
+  try{const j=await api("book",{token:getToken(),slot:id});S.slots=j.slots;rerender();setTimeout(()=>flash($("#b-msg"),(cur?"Уақытың ауыстырылды: ":"Жазылдың: ")+slotLabel(id)),100)}
   catch(e){flash(msg,e.message==="taken"?"Бұл уақытты біреу алып қойды. Басқасын таңда.":e.message==="closed"?"Жазылу жабық.":"Болмады, қайта көр.");refreshStudent().catch(()=>{})}
 }
 function txt(v){return`<p style="white-space:pre-wrap">${esc(v)}</p>`}
@@ -522,8 +522,10 @@ function renderAnswers(){
 function prepPill(st){const n=filled(st),k=ikiFilled(st);const cls=n>=30&&k>=3?"ok":n>=1?"warn":"";return`<span class="pill ${cls}">${n}/${QUESTIONS.length} сұрақ${k?` · икигай ${k}/4`:""}</span>`}
 function openStudent(id){S.sel=id;const el=$("#t-student");el.hidden=false;buildStudentEditor();el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})}
 function renderStudentHead(){const h=$("#s-head");if(!h)return;const st=S.students[S.sel]||{};const sl=mySlot(S.sel);
-  h.innerHTML=`<div class="row" style="justify-content:space-between"><div><span class="eyebrow">${sl?slotLabel(sl):"уақыт таңдамаған"}</span><h2>${esc(st.name||"Студент")}</h2>${st.contact?`<p class="muted">${esc(st.contact)}</p>`:""}</div><button class="ghost" id="s-close">Жабу</button></div>`;
+  h.innerHTML=`<div class="row" style="justify-content:space-between"><div><span class="eyebrow">${sl?slotLabel(sl):"уақыт таңдамаған"}</span><h2>${esc(st.name||"Студент")}</h2>${st.contact?`<p class="muted">${esc(st.contact)}</p>`:""}</div><div class="row"><button class="ghost danger" id="s-del">Студентті өшіру</button><button class="ghost" id="s-close">Жабу</button></div></div><p class="muted" id="s-del-msg" style="font-size:14px"></p>`;
   $("#s-close").onclick=()=>{S.sel=null;$("#t-student").hidden=true};
+  $("#s-del").onclick=async()=>{const b=$("#s-del");if(!b.dataset.armed){b.dataset.armed="1";b.textContent="Иә, толық өшіру";$("#s-del-msg").textContent="Жауаптары, уақыты және жоспары қайтарылмайтындай өшеді.";return}
+    b.disabled=true;try{const id=S.sel;await api("deleteStudent",{pw:S.pw,id});S.sel=null;$("#t-student").hidden=true;delete S.students[id];delete S.notes[id];await refreshAdmin()}catch(e){b.disabled=false;$("#s-del-msg").textContent="Өшірілмеді: "+(e.message==="unknown_action"?"Apps Script-ті жаңа нұсқамен қайта жариялаңыз (README).":"қайта көріңіз.")}};
   const ans=$("#s-answers");if(ans)ans.innerHTML=answersHtml(st);
   const g=$("#gen");if(g)g.hidden=!S.sample;
 }

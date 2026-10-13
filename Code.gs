@@ -40,6 +40,7 @@ function route(r) {
     case 'admin': admin(r.pw); return everything();
     case 'saveNote': admin(r.pw); return saveNote(r.id, r.note);
     case 'free': admin(r.pw); clearSlot(r.slot); return {};
+    case 'deleteStudent': admin(r.pw); deleteStudent(String(r.id || '')); return {};
     case 'config': admin(r.pw); return { config: setConfig(r.config || {}) };
     default: throw new Error('unknown_action');
   }
@@ -166,6 +167,22 @@ function saveNote(id, note) {
   const now = new Date().toISOString();
   if (n) s.getRange(n._row, 2, 1, 2).setValues([[now, data]]); else s.appendRow([id, now, data]);
   return {};
+}
+
+// Студентті толық өшіру: тіркелу, уақыт, мұғалім жазбасы және «Жауаптар» парағындағы жолы.
+function deleteStudent(id) {
+  if (!id) throw new Error('bad_id');
+  const st = rows('students').find(r => r.id === id);
+  if (!st) throw new Error('not_found');
+  clearSlots(id);
+  const n = sheet('notes');
+  rows('notes').filter(r => r.studentId === id).reverse().forEach(r => n.deleteRow(r._row));
+  const rd = SpreadsheetApp.getActive().getSheetByName(READABLE);
+  if (rd && rd.getLastRow() > 1) {
+    const w = rd.getLastColumn(), v = rd.getRange(1, 1, rd.getLastRow(), w).getValues();
+    for (let i = v.length - 1; i >= 1; i--) if (v[i].indexOf(id) !== -1) rd.deleteRow(i + 1);
+  }
+  sheet('students').deleteRow(st._row);
 }
 
 function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
